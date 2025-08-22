@@ -6,22 +6,121 @@
 <title>Eman Text Encoder</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
-html, body {height:100%;margin:0;font-family:'Orbitron',monospace;background:#0a0a0a;color:#f0f0f0;display:flex;justify-content:center;align-items:center;}
-.container {background:linear-gradient(145deg,#1c0000,#330000);padding:2rem;border-radius:20px;width:1200px;max-width:95%;box-shadow:0 0 40px rgba(255,0,0,0.5);display:flex;flex-direction:column;align-items:center;}
-h2 {text-align:center;font-size:2rem;color:#ff3333;margin-bottom:1rem;text-shadow:0 0 10px #ff0000;}
-label {font-weight:bold;margin-top:1rem;display:block;color:#ff6666;text-shadow:0 0 5px #ff0000;text-align:center;}
-select,textarea,button {width:100%;margin:0.5rem 0;padding:0.8rem;border-radius:12px;border:none;font-size:1rem;transition:0.3s;}
-select,textarea {background:rgba(0,0,0,0.6);color:#fff;border:1px solid #ff0000;}
+html, body {
+  height:100%;
+  margin:0;
+  font-family:'Orbitron',monospace;
+  background:#0a0a0a;
+  color:#f0f0f0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container {
+  background:linear-gradient(145deg,#1c0000,#330000);
+  padding:2rem;
+  border-radius:20px;
+  width:1200px;
+  max-width:95%;
+  box-shadow:0 0 40px rgba(255,0,0,0.5);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+h2 {
+  text-align:center;
+  font-size:2rem;
+  color:#ff3333;
+  margin-bottom:1rem;
+  text-shadow:0 0 10px #ff0000;
+}
+
+label {
+  font-weight:bold;
+  margin-top:1rem;
+  display:block;
+  color:#ff6666;
+  text-shadow:0 0 5px #ff0000;
+  text-align:center;
+}
+
+select,textarea,button {
+  width:100%;
+  margin:0.5rem 0;
+  padding:0.8rem;
+  border-radius:12px;
+  border:none;
+  font-size:1rem;
+  transition:0.3s;
+}
+
+select,textarea {
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  border:1px solid #ff0000;
+}
+
 select:hover,textarea:hover {border-color:#ff5555;}
-button {background:#ff0000;color:white;font-weight:bold;cursor:pointer;animation:glow 2s infinite;transition:transform 0.2s, background 0.3s;}
+
+button {
+  background:#ff0000;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  animation:glow 2s infinite;
+  transition:transform 0.2s, background 0.3s;
+}
 button:hover {background:#ff3333;transform:scale(1.05);}
-pre {background:rgba(0,0,0,0.7);padding:1rem;border-radius:12px;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;border:1px solid #ff0000;min-height:80px;margin-top:0.5rem;}
+
+pre {
+  background:rgba(0,0,0,0.7);
+  padding:1rem;
+  border-radius:12px;
+  overflow-x:auto;
+  white-space:pre-wrap;
+  word-wrap:break-word;
+  border:1px solid #ff0000;
+  min-height:80px;
+  margin-top:0.5rem;
+}
+
 .grid {display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;}
+
+/* Desktop: wide container remains */
 @media(max-width:1200px){.container{width:95%;}}
-@media(max-width:700px){.grid{grid-template-columns:1fr;}}
-#clipboardNotice {position:fixed;bottom:20px;right:20px;background:#ff0000;color:#fff;padding:0.8rem 1.2rem;border-radius:10px;opacity:0;transform:translateY(20px);transition:0.5s ease;box-shadow:0 0 20px rgba(255,0,0,0.6);font-weight:bold;}
+/* Mobile: single-column grid and scrollable */
+@media(max-width:900px){
+  html, body {
+    align-items:flex-start;
+    overflow-y:auto;
+    padding:1rem 0;
+  }
+  .container {width:95%;padding:1rem;}
+  .grid {grid-template-columns:1fr;gap:0.8rem;}
+}
+
+#clipboardNotice {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#ff0000;
+  color:#fff;
+  padding:0.8rem 1.2rem;
+  border-radius:10px;
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.5s ease;
+  box-shadow:0 0 20px rgba(255,0,0,0.6);
+  font-weight:bold;
+}
 #clipboardNotice.show {opacity:1;transform:translateY(0);}
-@keyframes glow {0%,100%{box-shadow:0 0 15px #ff0000,0 0 30px #ff0000;}50%{box-shadow:0 0 25px #ff4444,0 0 50px #ff4444;}}
+
+@keyframes glow {
+  0%,100%{box-shadow:0 0 15px #ff0000,0 0 30px #ff0000;}
+  50%{box-shadow:0 0 25px #ff4444,0 0 50px #ff4444;}
+}
 </style>
 </head>
 <body>
@@ -69,7 +168,6 @@ const methodOptions = {
   ancient:['Hieroglyphs','Cuneiform','Proto-Writing'],
   technical:['Binary','Hexadecimal','Octal']
 };
-
 const bubbleMap = Object.fromEntries([...Array(26)].map((_,i)=>[String.fromCharCode(65+i),String.fromCharCode(0x24B6+i)]));
 const leetMap = {'A':'4','B':'8','C':'(','D':'D','E':'3','F':'F','G':'6','H':'#','I':'1','J':'J','K':'K','L':'1','M':'M','N':'N','O':'0','P':'P','Q':'Q','R':'R','S':'5','T':'7','U':'U','V':'V','W':'W','X':'X','Y':'Y','Z':'2'};
 const fantasyRunes=['ᚠ','ᚢ','ᚦ','ᚩ','ᚱ','ᚳ','ᚷ','ᚹ','ᚻ','ᚾ'];
@@ -92,7 +190,6 @@ function initCategories(){
   });
   updateMethods();
 }
-
 function updateMethods(){
   const cat=categorySelect.value;
   methodSelect.innerHTML='';
@@ -104,14 +201,12 @@ function updateMethods(){
   });
   updatePreview();
 }
-
 function transformText(text,category,method){
   if(!text) return '';
   if(method==='Em Space') return text.split('').map(c=>' '+c).join('');
   if(method==='Symbols Swap') return text.split('').map(c=>'★').join('');
   if(method==='Leetspeak') return text.split('').map(c=>leetMap[c.toUpperCase()]||c).join('');
   if(method==='Bubble Text') return text.split('').map(c=>bubbleMap[c.toUpperCase()]||c).join('');
-
   switch(category){
     case 'encoding':
       if(method==='Base64') return btoa(text);
@@ -156,25 +251,18 @@ function transformText(text,category,method){
   }
   return text;
 }
-
-function updatePreview(){ 
-  previewText.textContent = transformText(inputText.value, categorySelect.value, methodSelect.value);
-}
-
+function updatePreview(){ previewText.textContent = transformText(inputText.value, categorySelect.value, methodSelect.value); }
 async function encodeText(){
   const encoded=transformText(inputText.value, categorySelect.value, methodSelect.value);
   outputText.textContent=encoded;
-  try{ 
-      await navigator.clipboard.writeText(encoded);
+  try{ await navigator.clipboard.writeText(encoded);
       clipboardNotice.classList.add('show');
       setTimeout(()=>clipboardNotice.classList.remove('show'),2000);
   }catch(err){console.error("Clipboard copy failed:",err);}
 }
-
 categorySelect.addEventListener('change',updateMethods);
 methodSelect.addEventListener('change',updatePreview);
 inputText.addEventListener('input',updatePreview);
-
 initCategories();
 </script>
 </body>
