@@ -3,43 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eman Text Encoder - Wide GUI</title>
+<title>Eman Text Encoder</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
-html, body {
-  height: 100%; margin: 0;
-  font-family: 'Orbitron', monospace;
-  background: #0a0a0a;
-  color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.container {
-  background: linear-gradient(145deg, #1c0000, #330000);
-  padding: 2rem;
-  border-radius: 20px;
-  width: 1200px;
-  max-width: 95%;
-  box-shadow: 0 0 40px rgba(255,0,0,0.5);
-  animation: fadeIn 1.5s ease forwards;
-  display: flex; flex-direction: column; align-items: center;
-}
-@keyframes fadeIn {0%{opacity:0;transform:translateY(-20px);}100%{opacity:1;transform:translateY(0);} }
+html, body {height:100%;margin:0;font-family:'Orbitron',monospace;background:#0a0a0a;color:#f0f0f0;display:flex;justify-content:center;align-items:center;}
+.container {background:linear-gradient(145deg,#1c0000,#330000);padding:2rem;border-radius:20px;width:1200px;max-width:95%;box-shadow:0 0 40px rgba(255,0,0,0.5);display:flex;flex-direction:column;align-items:center;}
+h2 {text-align:center;font-size:2rem;color:#ff3333;margin-bottom:1rem;text-shadow:0 0 10px #ff0000;}
+label {font-weight:bold;margin-top:1rem;display:block;color:#ff6666;text-shadow:0 0 5px #ff0000;text-align:center;}
+select,textarea,button {width:100%;margin:0.5rem 0;padding:0.8rem;border-radius:12px;border:none;font-size:1rem;transition:0.3s;}
+select,textarea {background:rgba(0,0,0,0.6);color:#fff;border:1px solid #ff0000;}
+select:hover,textarea:hover {border-color:#ff5555;}
+button {background:#ff0000;color:white;font-weight:bold;cursor:pointer;animation:glow 2s infinite;transition:transform 0.2s, background 0.3s;}
+button:hover {background:#ff3333;transform:scale(1.05);}
+pre {background:rgba(0,0,0,0.7);padding:1rem;border-radius:12px;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;border:1px solid #ff0000;min-height:80px;margin-top:0.5rem;}
+.grid {display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;}
+@media(max-width:1200px){.container{width:95%;}}
+@media(max-width:700px){.grid{grid-template-columns:1fr;}}
+#clipboardNotice {position:fixed;bottom:20px;right:20px;background:#ff0000;color:#fff;padding:0.8rem 1.2rem;border-radius:10px;opacity:0;transform:translateY(20px);transition:0.5s ease;box-shadow:0 0 20px rgba(255,0,0,0.6);font-weight:bold;}
+#clipboardNotice.show {opacity:1;transform:translateY(0);}
 @keyframes glow {0%,100%{box-shadow:0 0 15px #ff0000,0 0 30px #ff0000;}50%{box-shadow:0 0 25px #ff4444,0 0 50px #ff4444;}}
-h2 { text-align:center; font-size:2rem; color:#ff3333; margin-bottom:1rem; text-shadow:0 0 10px #ff0000; }
-label { font-weight:bold; margin-top:1rem; display:block; color:#ff6666; text-shadow:0 0 5px #ff0000; text-align:center; }
-select, textarea, button { width:100%; margin:0.5rem 0; padding:0.8rem; border-radius:12px; border:none; font-size:1rem; transition:0.3s; }
-select, textarea { background: rgba(0,0,0,0.6); color: #fff; border:1px solid #ff0000; }
-select:hover, textarea:hover { border-color:#ff5555; }
-button { background:#ff0000; color:white; font-weight:bold; cursor:pointer; animation:glow 2s infinite; transition:transform 0.2s, background 0.3s; }
-button:hover { background:#ff3333; transform:scale(1.05); }
-pre { background: rgba(0,0,0,0.7); padding:1rem; border-radius:12px; overflow-x:auto; white-space:pre-wrap; word-wrap:break-word; border:1px solid #ff0000; min-height:80px; margin-top:0.5rem; }
-.grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; width:100%; }
-@media(max-width:1200px){ .container { width:95%; } }
-@media(max-width:700px){ .grid { grid-template-columns:1fr; } }
-#clipboardNotice { position: fixed; bottom: 20px; right: 20px; background: #ff0000; color: #fff; padding: 0.8rem 1.2rem; border-radius: 10px; opacity: 0; transform: translateY(20px); transition: 0.5s ease; box-shadow: 0 0 20px rgba(255,0,0,0.6); font-weight: bold; }
-#clipboardNotice.show { opacity:1; transform:translateY(0); }
 </style>
 </head>
 <body>
@@ -77,34 +59,28 @@ pre { background: rgba(0,0,0,0.7); padding:1rem; border-radius:12px; overflow-x:
 
 <script>
 const methodOptions = {
-  encoding: ['Base64','URL Encode','Hexadecimal'],
-  ciphers: ['Caesar +3','ROT13','Vigenère'],
-  visual: ['ASCII Blocks','Emoji Representation','Grid Mapping'],
-  formatting: ['HTML Entities','Markdown Bold','Markdown Italics'],
-  unicode: ['Combining Accents','Mathematical Alphanumerics','Braille'],
-  special: ['Em Space','Zero Width','Symbols Swap','Leetspeak','Bubble Text','Invisible Text'],
-  fantasy: ['Runes','Magical Glyphs','Fictional Alphabet'],
-  ancient: ['Hieroglyphs','Cuneiform','Proto-Writing'],
-  technical: ['Binary','Hexadecimal','Octal']
+  encoding:['Base64','URL Encode','Hexadecimal'],
+  ciphers:['Caesar +3','ROT13','Vigenère'],
+  visual:['ASCII Blocks','Emoji Representation','Grid Mapping'],
+  formatting:['HTML Entities','Markdown Bold','Markdown Italics'],
+  unicode:['Combining Accents','Mathematical Alphanumerics','Braille'],
+  special:['Em Space','Symbols Swap','Leetspeak','Bubble Text'],
+  fantasy:['Runes','Magical Glyphs','Fictional Alphabet'],
+  ancient:['Hieroglyphs','Cuneiform','Proto-Writing'],
+  technical:['Binary','Hexadecimal','Octal']
 };
 
-// Unicode bubble letters a-z lowercase
-const bubbleMap = {
-  'a':'ⓐ','b':'ⓑ','c':'ⓒ','d':'ⓓ','e':'ⓔ','f':'ⓕ','g':'ⓖ','h':'ⓗ','i':'ⓘ','j':'ⓙ',
-  'k':'ⓚ','l':'ⓛ','m':'ⓜ','n':'ⓝ','o':'ⓞ','p':'ⓟ','q':'ⓠ','r':'ⓡ','s':'ⓢ','t':'ⓣ',
-  'u':'ⓤ','v':'ⓥ','w':'ⓦ','x':'ⓧ','y':'ⓨ','z':'ⓩ','A':'Ⓐ','B':'Ⓑ','C':'Ⓒ','D':'Ⓓ',
-  'E':'Ⓔ','F':'Ⓕ','G':'Ⓖ','H':'Ⓗ','I':'Ⓘ','J':'Ⓙ','K':'Ⓚ','L':'Ⓛ','M':'Ⓜ','N':'Ⓝ',
-  'O':'Ⓞ','P':'Ⓟ','Q':'Ⓠ','R':'Ⓡ','S':'Ⓢ','T':'Ⓣ','U':'Ⓤ','V':'Ⓥ','W':'Ⓦ','X':'Ⓧ','Y':'Ⓨ','Z':'Ⓩ'
-};
-
+const bubbleMap = Object.fromEntries([...Array(26)].map((_,i)=>[String.fromCharCode(65+i),String.fromCharCode(0x24B6+i)]));
 const leetMap = {'A':'4','B':'8','C':'(','D':'D','E':'3','F':'F','G':'6','H':'#','I':'1','J':'J','K':'K','L':'1','M':'M','N':'N','O':'0','P':'P','Q':'Q','R':'R','S':'5','T':'7','U':'U','V':'V','W':'W','X':'X','Y':'Y','Z':'2'};
+const fantasyRunes=['ᚠ','ᚢ','ᚦ','ᚩ','ᚱ','ᚳ','ᚷ','ᚹ','ᚻ','ᚾ'];
+const ancientGlyphs=['𓀀','𓀁','𓀂','𓀃','𓀄','𓀅','𓀆','𓀇','𓀈','𓀉'];
 
-const categorySelect = document.getElementById('category');
-const methodSelect = document.getElementById('method');
-const inputText = document.getElementById('inputText');
-const previewText = document.getElementById('previewText');
-const outputText = document.getElementById('outputText');
-const clipboardNotice = document.getElementById('clipboardNotice');
+const categorySelect=document.getElementById('category');
+const methodSelect=document.getElementById('method');
+const inputText=document.getElementById('inputText');
+const previewText=document.getElementById('previewText');
+const outputText=document.getElementById('outputText');
+const clipboardNotice=document.getElementById('clipboardNotice');
 
 function initCategories(){
   categorySelect.innerHTML='';
@@ -118,7 +94,7 @@ function initCategories(){
 }
 
 function updateMethods(){
-  const cat = categorySelect.value;
+  const cat=categorySelect.value;
   methodSelect.innerHTML='';
   methodOptions[cat].forEach(method=>{
     const option=document.createElement('option');
@@ -130,9 +106,11 @@ function updateMethods(){
 }
 
 function transformText(text,category,method){
+  if(!text) return '';
+  if(method==='Em Space') return text.split('').map(c=>' '+c).join('');
+  if(method==='Symbols Swap') return text.split('').map(c=>'★').join('');
   if(method==='Leetspeak') return text.split('').map(c=>leetMap[c.toUpperCase()]||c).join('');
-  if(method==='Bubble Text') return text.split('').map(c=>bubbleMap[c]||c).join('');
-  if(method==='Invisible Text') return text.split('').map(c=>c+'\u200B').join('');
+  if(method==='Bubble Text') return text.split('').map(c=>bubbleMap[c.toUpperCase()]||c).join('');
 
   switch(category){
     case 'encoding':
@@ -143,7 +121,7 @@ function transformText(text,category,method){
     case 'ciphers':
       if(method==='Caesar +3') return text.split('').map(c=>String.fromCharCode(c.charCodeAt(0)+3)).join('');
       if(method==='ROT13') return text.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26));
-      if(method==='Vigenère') return text.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)+(i%5))).join('');
+      if(method==='Vigenère'){const key="SECRET"; return text.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)+(key.charCodeAt(i%key.length))%26)).join('');}
       break;
     case 'visual':
       if(method==='ASCII Blocks') return text.split('').map(c=>c===' '?' ':'█').join('');
@@ -160,15 +138,16 @@ function transformText(text,category,method){
       if(method==='Mathematical Alphanumerics') return text.split('').map(c=>String.fromCharCode(c.charCodeAt(0)+120000)).join('');
       if(method==='Braille') return text.split('').map(c=>'⠿').join('');
       break;
-    case 'special':
-      if(method==='Em Space') return text.split(' ').map(()=>'\u2003').join('');
-      if(method==='Zero Width') return text.split('').map(()=>'\u200B').join('');
-      if(method==='Symbols Swap') return text.split('').map(c=>'★').join('');
-      break;
     case 'fantasy':
-      return text; // simplified
+      if(method==='Runes') return text.split('').map((c,i)=>fantasyRunes[i%fantasyRunes.length]).join('');
+      if(method==='Magical Glyphs') return text.split('').map(c=>'✨').join('');
+      if(method==='Fictional Alphabet') return text.split('').map(c=>'🜃').join('');
+      break;
     case 'ancient':
-      return text; // simplified
+      if(method==='Hieroglyphs') return text.split('').map((c,i)=>ancientGlyphs[i%ancientGlyphs.length]).join('');
+      if(method==='Cuneiform') return text.split('').map(c=>'𒀀').join('');
+      if(method==='Proto-Writing') return text.split('').map(c=>'𐌀').join('');
+      break;
     case 'technical':
       if(method==='Binary') return text.split('').map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
       if(method==='Hexadecimal') return text.split('').map(c=>c.charCodeAt(0).toString(16)).join(' ');
@@ -178,21 +157,23 @@ function transformText(text,category,method){
   return text;
 }
 
-function updatePreview(){ previewText.textContent = transformText(inputText.value, categorySelect.value, methodSelect.value); }
-
-async function encodeText(){
-  const encoded = transformText(inputText.value, categorySelect.value, methodSelect.value);
-  outputText.textContent = encoded;
-  try {
-    await navigator.clipboard.writeText(encoded);
-    clipboardNotice.classList.add('show');
-    setTimeout(()=>clipboardNotice.classList.remove('show'),2000);
-  } catch(err){ console.error("Clipboard copy failed:", err);}
+function updatePreview(){ 
+  previewText.textContent = transformText(inputText.value, categorySelect.value, methodSelect.value);
 }
 
-categorySelect.addEventListener('change', updateMethods);
-methodSelect.addEventListener('change', updatePreview);
-inputText.addEventListener('input', updatePreview);
+async function encodeText(){
+  const encoded=transformText(inputText.value, categorySelect.value, methodSelect.value);
+  outputText.textContent=encoded;
+  try{ 
+      await navigator.clipboard.writeText(encoded);
+      clipboardNotice.classList.add('show');
+      setTimeout(()=>clipboardNotice.classList.remove('show'),2000);
+  }catch(err){console.error("Clipboard copy failed:",err);}
+}
+
+categorySelect.addEventListener('change',updateMethods);
+methodSelect.addEventListener('change',updatePreview);
+inputText.addEventListener('input',updatePreview);
 
 initCategories();
 </script>
